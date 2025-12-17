@@ -44,7 +44,7 @@ class DEAPLoader:
 
 
 if __name__ == "__main__":
-    data_dir = "./data/data_original/"
+    data_dir = "./data/data_preprocessed_python/"
     loader = DEAPLoader(data_dir)
 
     X, y, subjects = loader.load_all_subjects()
