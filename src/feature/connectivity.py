@@ -1,6 +1,7 @@
 # src/features/connectivity.py
 
 import numpy as np
+from scipy.signal import hilbert
 
 # -----------------------------
 # 1️⃣ Pearson 相关系数
@@ -18,39 +19,40 @@ def pearson_connectivity(segment):
     np.ndarray, shape (channels, channels)
         Pearson correlation adjacency matrix
     """
-    return np.corrcoef(segment)  # shape: (channels, channels)
+    corr = np.corrcoef(segment)
+    # 将 NaN 替换为 0，防止后续图神经网络报错
+    return np.nan_to_num(corr)
 
 
 # -----------------------------
 # 2️⃣ PLV (Phase Locking Value)
 # -----------------------------
-from scipy.signal import hilbert
 
 def plv_connectivity(segment):
     """
-    Compute PLV adjacency matrix for EEG segment
-
+    Compute PLV adjacency matrix (Vectorized version)
+    
     Parameters
     ----------
     segment : np.ndarray, shape (channels, T)
-
-    Returns
-    -------
-    np.ndarray, shape (channels, channels)
-        PLV adjacency matrix
     """
     n_channels = segment.shape[0]
-    plv_matrix = np.zeros((n_channels, n_channels))
     
-    # 计算每个通道的瞬时相位
-    phase = np.angle(hilbert(segment, axis=1))  # shape: (channels, T)
+    # 1. 获取解析信号并提取相位
+    # axis=1 表示沿时间轴做 Hilbert 变换
+    analytic_signal = hilbert(segment, axis=1)
+    phase = np.angle(analytic_signal)  # shape: (channels, T)
     
-    for i in range(n_channels):
-        for j in range(i, n_channels):
-            phase_diff = phase[i] - phase[j]
-            plv = np.abs(np.sum(np.exp(1j * phase_diff)) / len(phase_diff))
-            plv_matrix[i, j] = plv
-            plv_matrix[j, i] = plv  # 对称矩阵
+    # 2. 计算复数单位向量: e^(i * phase)
+    # shape: (channels, T)
+    complex_phase = np.exp(1j * phase)
+    
+    # 3. 利用矩阵乘法一次性计算所有通道对的相位差平均
+    # 矩阵乘法: (channels, T) @ (T, channels) -> (channels, channels)
+    # 共轭转置 (conj().T) 相当于在指数中做了减法: e^(i*a) * e^(-i*b) = e^(i*(a-b))
+    # 最后除以时间点数 T 进行平均
+    T = segment.shape[1]
+    plv_matrix = np.abs(np.dot(complex_phase, complex_phase.conj().T) / T)
     
     return plv_matrix
 
