@@ -37,7 +37,7 @@ BASELINE_LEN = 3 * 128    # 基线长度 (前3秒通常去除)
 # ------------------------
 # 3. GNN 构图配置 (Graph Construction)
 # ------------------------
-GRAPH_TYPE = "pearson"    # 'pearson' 或 'plv'
+GRAPH_TYPE = "plv"    # 'pearson' 或 'plv'
 THRESHOLD = 0.5           # 邻接矩阵保留连接的阈值
 NODE_FEATURE_DIM = 5      # 节点特征维度 (DE: Delta, Theta, Alpha, Beta, Gamma)
 
@@ -51,14 +51,14 @@ LABEL_THRESHOLD = 5.0     # 二分类阈值 (DEAP 评分范围 1-9，通常以 5
 # ------------------------
 # 5. 模型与训练超参数 (Model & Training)
 # ------------------------
-MODEL_TYPE = "gcn"        # 'gcn' 或 'gat'
-HIDDEN_DIM = 64           # 隐藏层维度
-DROPOUT = 0.5             # Dropout
-HEADS = 4                 # GAT 多头注意力数量
+MODEL_TYPE = "gat"        # 'gcn' 或 'gat'
+HIDDEN_DIM = 128          # 增加隐藏层维度以提升模型容量
+DROPOUT = 0.3             # 降低dropout以减少信息丢失
+HEADS = 8                 # 增加GAT多头注意力数量
 LR = 0.001                # 学习率
-BATCH_SIZE = 64           # 批次大小
-EPOCHS = 100              # 训练轮数
-PATIENCE = 20             # 早停耐心值
+BATCH_SIZE = 32           # 减小批次大小以获得更稳定的梯度更新
+EPOCHS = 200              # 增加训练轮数
+PATIENCE = 25             # 增加早停耐心值
 
 # ------------------------
 # 6. 断点续训 (Resume)

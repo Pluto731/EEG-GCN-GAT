@@ -16,7 +16,7 @@ except ImportError:
     # 如果找不到 config，提供后备默认值
     print("Warning: Could not import config. Using default paths.")
     DATA_PROCESSED_DIR = "./data/processed"
-    GRAPH_TYPE = "pearson"
+    GRAPH_TYPE = "plv"
     LABEL_THRESHOLD = 5.0
 
 def inspect_data():
