@@ -65,7 +65,9 @@ http://www.eecs.qmul.ac.uk/mmv/datasets/deap/download.html
 ## ⚙️参数配置说明
 实验相关参数（如窗口长度、特征类型、模型超参数等）
 统一在 `src/config.py` 中进行修改，不需要直接训练或废弃代码。
+
 📎数据说明
 由于EEG体积数据增大（单文件通常超过500MB），
 data/ 目录未直接上传至 GitHub 仓库。
+
 请通过DEAP官方渠道申请并下载数据后，在本地运行实验流程。
